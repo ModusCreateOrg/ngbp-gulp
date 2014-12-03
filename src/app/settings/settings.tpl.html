@@ -3,4 +3,34 @@
   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque incidunt molestias pariatur numquam expedita consectetur,
   maiores, voluptates inventore distinctio impedit reprehenderit voluptas libero accusantium
    excepturi. Dolores, cumque facilis doloribus necessitatibus.</p>
+
+   <md-tabs md-selected="data.selectedIndex">
+         <md-tab id="tab1" aria-controls="tab1-content">
+           Item One
+         </md-tab>
+         <md-tab id="tab3" aria-controls="tab3-content">
+           Item Three
+         </md-tab>
+       </md-tabs>
+       <ng-switch on="data.selectedIndex" class="tabpanel-container">
+              <div role="tabpanel"
+                   id="tab1-content"
+                   aria-labelledby="tab1"
+                   ng-switch-when="0"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()" >
+                  View for Item #1<br/>
+                  data.selectedIndex = 0
+              </div>
+              <div role="tabpanel"
+                   id="tab3-content"
+                   aria-labelledby="tab3"
+                   ng-switch-when="1"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()" >
+                  View for Item #3<br/>
+                  data.selectedIndex = 2
+              </div>
+          </ng-switch>
+
 </md-content>
