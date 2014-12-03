@@ -2,8 +2,11 @@
   "name": "modus-ngbp-gulp",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "1.3.4",
+    "angular": "1.3.5",
     "angular-material": "0.6.0",
     "angular-ui-router": "0.2.13"
+  },
+  "resolutions": {
+    "angular": "1.3.5"
   }
 }
