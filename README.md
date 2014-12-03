@@ -4,11 +4,15 @@ A version of the Modus NGBP that uses gulp instead of Grunt. Setup to follow Tod
 
 ### Get up and running
 
-```bash
+
+```shell
 $ npm install
 $ bower install
 $ gulp
 ```
 
-A server will be started at `localhost:1337` for local dev.
+A server will be started at `localhost:1337` for local dev. gulp will watch for changes to your filesystem, and run the appropriate tasks based on what changes.
 
+### TODO
+- [ ] add testing integration
+- [ ] understanding if I'm using gulp properly
