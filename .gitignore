@@ -1,3 +1,6 @@
-vendor/
 .DS_Store
 .idea
+dist/
+build/
+vendor/
+node_modules/

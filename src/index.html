@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="boilerplate" ng-controller="AppController as app">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <title>Kabobs</title>
+
+        <!-- inject:css -->
+        <!-- endinject -->
+
+    </head>
+    <body>
+
+        <md-toolbar md-theme="blue">
+          <div class="md-toolbar-tools">
+            <span>Boilerplate</span>
+            <md-button ui-sref="about" ui-sref-active="md-raised">
+              About
+            </md-button>
+            <md-button ui-sref="settings" ui-sref-active="md-raised">
+              Settings
+            </md-button>
+          </div>
+        </md-toolbar>
+
+        <div ui-view="main"></div>
+
+    </body>
+
+    <!-- inject:js -->
+    <!-- endinject -->
+
+</html>

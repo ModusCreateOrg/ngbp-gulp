@@ -1,21 +1,26 @@
-(function() {
+function AppController() {
 
-    function AppController() {
+    var vm = this;
 
-        // viewModel. bind here to avoid 'this' (and having to use .bind() to change `this`
-        // context, and issues inside other function calls.
-        var vm = this;
+    vm.user = {
+        name: "Dave",
+        role: "admin"
+    };
 
-        vm.coolThings = [
-            'gulp',
-            'Material',
-            'Angular'
-        ];
+}
 
-    }
+function Config($urlRouterProvider) {
+    $urlRouterProvider.otherwise('/');
+}
 
-    angular
-        .module('modusBoilerplate', ['ngMaterial'])
-        .controller('AppController', AppController);
+angular
+.module('boilerplate', [
+    'boilerplate.about',
+    'boilerplate.settings',
 
-})();
+    'templates-app',
+
+    'ngMaterial'
+])
+.config(Config)
+.controller('AppController', AppController);
