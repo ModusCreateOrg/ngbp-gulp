@@ -16,7 +16,7 @@ $ gulp
 A server will be started at `localhost:1337` for local dev. gulp will watch for changes to your filesystem, and run the appropriate tasks based on what changes.
 
 ### Livereload
-For livereaload to work, you must [install this Chrome extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) and have it activated when developing on `localhost:1337. 
+For livereaload to work, you must [install this Chrome extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) and have it activated when developing on `localhost:1337`. 
 
 ### Available Tasks
 All tasks can be seen in the shell by running `gulp help`
@@ -37,5 +37,22 @@ test        uses karma to directly run our unit tests
 watch      
 ```
 
-### TODO
-- [ ] understanding if I'm using gulp properly
+### Contributing
+Please! I'd love to hear bug reports as well as pull requests.
+
+### License
+```
+   DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                   Version 2, December 2004
+
+Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+Everyone is permitted to copy and distribute verbatim or modified
+copies of this license document, and changing it is allowed as long
+as the name is changed.
+
+           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+  TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+ 0. You just DO WHAT THE FUCK YOU WANT TO.
+ ```
