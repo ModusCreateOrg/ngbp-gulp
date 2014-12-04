@@ -12,7 +12,7 @@ function Config($stateProvider) {
 }
 
 function AboutController() {
-
+  var vm = this;
 }
 
 angular

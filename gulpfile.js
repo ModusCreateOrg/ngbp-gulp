@@ -1,16 +1,18 @@
 var gulp = require('gulp');
+
 var changed = require('gulp-changed');
 var concat = require('gulp-concat');
 var del = require('del');
 var ecstatic = require("ecstatic");
 var gutil = require('gulp-util');
-var ngHtml2Js = require("gulp-ng-html2js");
 var http = require('http');
 var inject = require("gulp-inject");
 var jshint = require('gulp-jshint');
+var karma = require('karma').server;
 var livereload = require('gulp-livereload');
 var merge = require('merge-stream');
 var minifyHtml = require("gulp-minify-html");
+var ngHtml2Js = require("gulp-ng-html2js");
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var runSequence = require('run-sequence');
@@ -94,7 +96,24 @@ gulp.task('index', function() {
         .pipe(gulp.dest(config.buildDir));
 });
 
+/**
+ * Run test once and exit
+ */
+gulp.task('test', function(done) {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done);
+});
 
+/**
+ * Watch for file changes and re-run tests on each change
+ */
+gulp.task('tdd', function(done) {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js'
+    }, done);
+});
 
 /**
  * Compiles all of our application templates (*.tpl.html) into angular modules
@@ -162,7 +181,7 @@ gulp.task('server', function() {
  */
 gulp.task('watch', function() {
     gulp.watch(['src/scss/*.scss'], ['sass']);
-    gulp.watch(['src/**/*.js'], ['copy', 'jshint']);
+    gulp.watch(['src/**/*.js'], ['copy', 'jshint', 'tdd']);
     gulp.watch([config.appFiles.templates], ['html2js']);
     gulp.watch('src/index.html', ['index']);
 });
@@ -175,5 +194,5 @@ gulp.task('default', function() {
 });
 
 gulp.task('build', function() {
-    runSequence('clean', 'sass', 'html2js', 'copy', 'index');
+    runSequence('clean', 'sass', 'html2js', 'copy', 'test', 'index');
 });
