@@ -1,4 +1,4 @@
-var gulp = require('gulp');
+var gulp = require('gulp-help')(require('gulp'));
 
 var changed = require('gulp-changed');
 var concat = require('gulp-concat');
@@ -29,7 +29,7 @@ var config = require('./build.config.js');
 /**
  * Compiles our SCSS, renames it to match our package.json file, and moves it into our build directory.
  */
-gulp.task('sass', function() {
+gulp.task('sass', 'compiles sass files into css', function() {
     return gulp.src(config.appFiles.scss)
         .pipe(plumber())
         .pipe(sass())
@@ -42,7 +42,7 @@ gulp.task('sass', function() {
 /**
  * Cleans our /build and /dist folders before we start our build.
  */
-gulp.task('clean', function() {
+gulp.task('clean', 'cleaning build directories', function() {
     return del([config.buildDir, config.prodDir]);
 });
 
@@ -50,7 +50,9 @@ gulp.task('clean', function() {
  * Does the appropriate copying of our files into the proper
  * build directories. Only copy the changes files.
  */
-gulp.task('copy', function() {
+gulp.task('copy', 'copies all relevant files to their proper location', function() {
+
+    gutil.log(gutil.colors.blue('Copying assets'));
 
     var assets = gulp.src('src/assets/**/*', {
             base: 'src/assets/'
@@ -77,7 +79,7 @@ gulp.task('copy', function() {
 /**
  * Compiles our index.html and does things
  */
-gulp.task('index', function() {
+gulp.task('index', 'injects script and css files into our index.html file', function() {
     var target = gulp.src('src/index.html');
     var files = [].concat(
         config.vendorFiles.js,
@@ -99,7 +101,7 @@ gulp.task('index', function() {
 /**
  * Run test once and exit
  */
-gulp.task('test', function(done) {
+gulp.task('test', 'uses karma to directly run our unit tests', function(done) {
     karma.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
@@ -107,19 +109,10 @@ gulp.task('test', function(done) {
 });
 
 /**
- * Watch for file changes and re-run tests on each change
- */
-gulp.task('tdd', function(done) {
-    karma.start({
-        configFile: __dirname + '/karma.conf.js'
-    }, done);
-});
-
-/**
  * Compiles all of our application templates (*.tpl.html) into angular modules
  * using $templateCache
  */
-gulp.task('html2js', function() {
+gulp.task('html2js', 'compiles .tpl.html files into javascript templates, injected into $templateCache', function() {
     return gulp.src(config.appFiles.templates)
         .pipe(plumber())
         .pipe(minifyHtml({
@@ -148,7 +141,7 @@ gulp.task('livereload', function() {
 /**
  * Spin up a really simple node server to do development on.
  */
-gulp.task('server', function() {
+gulp.task('server', 'spins up a local development server on 0.0.0.0:1337', function() {
     http.createServer(ecstatic({root: __dirname + '/build'})).listen(1337);
     gutil.log(gutil.colors.blue('HTTP server listening on port 1337'));
 });
@@ -157,24 +150,12 @@ gulp.task('server', function() {
  * Runs jsHint on all of our application javascript and runs
  * it through a pretty reporter.
  */
- gulp.task('jshint', function() {
-     var options = {
-         curly: true,
-         immed: true,
-         newcap: true,
-         noarg: true,
-         sub: true,
-         boss: true,
-         eqnull: true,
-         globalstrict: true
-     };
-
+ gulp.task('jshint', 'runs jshint on our application code. reads a local copy of your .jshintrc in the root of the project', function() {
      return gulp.src(config.appFiles.js)
-         .pipe(jshint(options))
+         .pipe(jshint())
          .pipe(jshint.reporter(stylish))
          .pipe(jshint.reporter('fail'));
  });
-
 
 /**
  * Watches all of our source files, and runs the appropriate task
@@ -189,10 +170,10 @@ gulp.task('watch', function() {
 /**
  * Setup our default task, when `gulp` is run.
  */
-gulp.task('default', function() {
-    runSequence('build', 'watch', 'server', 'livereload');
+gulp.task('default', 'runs -> build, watch, server, livereload', function() {
+    runSequence('build', ['watch', 'server'], 'livereload');
 });
 
-gulp.task('build', function() {
+gulp.task('build', 'runs -> clean, sass, html2js, copy, test, index', function() {
     runSequence('clean', 'sass', 'html2js', 'copy', 'test', 'index');
 });
