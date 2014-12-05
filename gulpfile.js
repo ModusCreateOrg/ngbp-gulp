@@ -65,7 +65,7 @@ gulp.task('clean', 'cleaning build directories', function() {
  * Does the appropriate copying of our files into the proper
  * build directories. Only copy the changes files.
  */
-gulp.task('copy', 'copies all relevant files to their proper location', function() {
+gulp.task('copy', 'copies all relevant files to their proper location in /build during development', function() {
 
     var assets = gulp.src('src/assets/**/*', {
             base: 'src/assets/'
@@ -125,7 +125,7 @@ gulp.task('test', 'uses karma to directly run our unit tests', function(done) {
 /**
  * Once our code is copied into /build, go through and annotate it.
  */
-gulp.task('ngAnnotate', 'runs ngAnnotate on our code for proper strictdi conformity', function() {
+gulp.task('ngAnnotate', 'runs ngAnnotate on our code for proper `strictdi` conformity', function() {
     return gulp.src(config.buildDir + '/src/**/*.js')
         .pipe(plumber())
         .pipe(ngAnnotate({ add: true }))
@@ -156,7 +156,7 @@ gulp.task('html2js', 'compiles .tpl.html files into javascript templates, inject
 /**
  * Setup livereload to watch our build directory for changes, and reload.
  */
-gulp.task('livereload', function() {
+gulp.task('livereload', 'don\'t run this manually', function() {
     livereload.listen();
     gulp.watch(config.buildDir + '/**').on('change', livereload.changed);
 });
@@ -194,7 +194,7 @@ gulp.task('watch', function() {
 /**
  * does all of our production things.
  */
-gulp.task('build-prod-js', 'collection of production tasks', function() {
+gulp.task('build-prod-js', 'builds production ready javascript versionf of vendor, application, and template javascript.', function() {
 
     // concat all of our vendor js and app js files.
     var files = [].concat(config.vendorFiles.js, config.appFiles.js, config.buildDir + '/templates-app.js');
@@ -213,7 +213,7 @@ gulp.task('build-prod-js', 'collection of production tasks', function() {
 
 });
 
-gulp.task('build-prod-css', 'builds da css', function() {
+gulp.task('build-prod-css', 'builds production ready CSS from /build', function() {
     var files = [].concat(config.buildDir + '/vendor/**/*.css', config.buildDir + '/assets/*.css');
     console.log(files);
     return gulp.src(files)
@@ -226,7 +226,7 @@ gulp.task('build-prod-css', 'builds da css', function() {
 });
 
 
-gulp.task('build-prod-index', 'builds index file for production', function() {
+gulp.task('build-prod-index', 'builds our index.html file for production', function() {
 
     // copy over our templates
     var indexFile = gulp.src('src/index.html');
