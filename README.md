@@ -1,6 +1,6 @@
 Angular Boilerplate
 ======
-A version of the NGBP that uses gulp instead of Grunt, and comes default with the Angular Material library. Basic code exampples are setup to follow [Todd Motto](https://github.com/toddmotto/angularjs-styleguide) and [John Papa's](https://github.com/johnpapa/angularjs-styleguide) styleguide for Angular. Inspired by [ngbp](https://github.com/ngbp/ngbp) by [Josh Miller](https://github.com/joshdmiller).
+A version of the NGBP that uses gulp instead of Grunt, and comes default with the Angular Material library. Basic code examples are setup to follow [Todd Motto](https://github.com/toddmotto/angularjs-styleguide) and [John Papa's](https://github.com/johnpapa/angularjs-styleguide) styleguide for Angular. Inspired by [ngbp](https://github.com/ngbp/ngbp) by [Josh Miller](https://github.com/joshdmiller).
 
 ### Get up and running
 To use this boilerplate, we'll assume that you have globally installed versions of `bower` and `npm`, as well as `node`.
@@ -22,7 +22,7 @@ New application files that are added to `/src` will automatically be added to th
 Ready to go to prod? Bump the version number in `package.json`, and run `gulp prod` to do a build. Production ready assets and code will be copied over to your `/dist` directory and ready for deployment.
 
 ### Livereload
-For livereaload to work, you must [install this Chrome extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) and have it activated when developing on `localhost:1337`. 
+For Livereload to work, you must [install this Chrome extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) and have it activated when developing on `localhost:1337`. 
 
 ### Available Tasks
 All tasks can be seen in the shell by running `gulp help`
