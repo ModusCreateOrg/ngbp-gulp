@@ -1,3 +1,4 @@
+/* @ngInject */
 function AppController() {
 
     var vm = this;
@@ -9,7 +10,8 @@ function AppController() {
 
 }
 
-function Config($urlRouterProvider) {
+/* @ngInject */
+function AppConfig($urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
 }
 
@@ -22,5 +24,5 @@ angular
 
     'ngMaterial'
 ])
-.config(Config)
+.config(AppConfig)
 .controller('AppController', AppController);

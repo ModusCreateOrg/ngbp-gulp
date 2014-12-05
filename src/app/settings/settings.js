@@ -1,4 +1,5 @@
-function Config($stateProvider) {
+/* @ngInject */
+function SettingsConfig($stateProvider) {
   $stateProvider.state('settings', {
       url: '/settings',
       views: {
@@ -10,11 +11,12 @@ function Config($stateProvider) {
   });
 }
 
+/* @ngInject */
 function SettingsController() {
     console.log('settings controller');
 }
 
 angular
   .module('boilerplate.settings', ['ui.router'])
-  .config(Config)
+  .config(SettingsConfig)
   .controller('SettingsController', SettingsController);

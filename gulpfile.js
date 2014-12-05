@@ -1,7 +1,9 @@
 var gulp = require('gulp-help')(require('gulp'));
 
+var bytediff = require('gulp-bytediff');
 var changed = require('gulp-changed');
 var concat = require('gulp-concat');
+var csso = require('gulp-csso');
 var del = require('del');
 var ecstatic = require("ecstatic");
 var gutil = require('gulp-util');
@@ -12,11 +14,14 @@ var karma = require('karma').server;
 var livereload = require('gulp-livereload');
 var merge = require('merge-stream');
 var minifyHtml = require("gulp-minify-html");
+var ngAnnotate = require('gulp-ng-annotate');
 var ngHtml2Js = require("gulp-ng-html2js");
 var plumber = require('gulp-plumber');
+var Q = require("q");
 var rename = require('gulp-rename');
 var runSequence = require('run-sequence');
 var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 var stylish = require('jshint-stylish');
 var uglify = require("gulp-uglify");
 var watch = require('gulp-watch');
@@ -26,6 +31,16 @@ var wrap = require("gulp-wrap");
 var pkg = require('./package.json');
 var config = require('./build.config.js');
 
+
+// once all of our files are "built", we can now get them ready for production.
+var prodFileName = pkg.name + '-' + pkg.version;
+
+var prodOutputFiles = {
+    js: prodFileName + '.min.js',
+    css: prodFileName + '.css'
+};
+
+
 /**
  * Compiles our SCSS, renames it to match our package.json file, and moves it into our build directory.
  */
@@ -33,8 +48,8 @@ gulp.task('sass', 'compiles sass files into css', function() {
     return gulp.src(config.appFiles.scss)
         .pipe(plumber())
         .pipe(sass())
-        .pipe(rename(function(path) {
-            path.basename = pkg.name + '-' + pkg.version;
+        .pipe(rename({
+            basename: pkg.name + '-' + pkg.version
         }))
         .pipe(gulp.dest(config.buildDir + '/assets'));
 });
@@ -51,8 +66,6 @@ gulp.task('clean', 'cleaning build directories', function() {
  * build directories. Only copy the changes files.
  */
 gulp.task('copy', 'copies all relevant files to their proper location', function() {
-
-    gutil.log(gutil.colors.blue('Copying assets'));
 
     var assets = gulp.src('src/assets/**/*', {
             base: 'src/assets/'
@@ -108,6 +121,17 @@ gulp.task('test', 'uses karma to directly run our unit tests', function(done) {
     }, done);
 });
 
+
+/**
+ * Once our code is copied into /build, go through and annotate it.
+ */
+gulp.task('ngAnnotate', 'runs ngAnnotate on our code for proper strictdi conformity', function() {
+    return gulp.src(config.buildDir + '/src/**/*.js')
+        .pipe(plumber())
+        .pipe(ngAnnotate({ add: true }))
+        .pipe(gulp.dest(config.buildDir + '/src'));
+});
+
 /**
  * Compiles all of our application templates (*.tpl.html) into angular modules
  * using $templateCache
@@ -124,7 +148,7 @@ gulp.task('html2js', 'compiles .tpl.html files into javascript templates, inject
             moduleName: 'templates-app'
         }))
         .pipe(concat('templates-app.js'))
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest(config.buildDir));
 });
 
@@ -162,9 +186,65 @@ gulp.task('server', 'spins up a local development server on 0.0.0.0:1337', funct
  */
 gulp.task('watch', function() {
     gulp.watch(['src/scss/*.scss'], ['sass']);
-    gulp.watch(['src/**/*.js'], ['copy', 'jshint', 'tdd']);
+    gulp.watch(['src/**/*.js'], ['copy', 'jshint']);
     gulp.watch([config.appFiles.templates], ['html2js']);
     gulp.watch('src/index.html', ['index']);
+});
+
+/**
+ * does all of our production things.
+ */
+gulp.task('build-prod-js', 'collection of production tasks', function() {
+
+    // concat all of our vendor js and app js files.
+    var files = [].concat(config.vendorFiles.js, config.appFiles.js, config.buildDir + '/templates-app.js');
+    return gulp.src(files)
+        .pipe(plumber())
+        .pipe(concat(prodOutputFiles.js, {
+            newLine: ';'
+        }))
+        .pipe(ngAnnotate())
+        .pipe(bytediff.start())
+        .pipe(uglify({
+            mangle: true
+        }))
+        .pipe(bytediff.stop())
+        .pipe(gulp.dest(config.prodDir + '/assets'));
+
+});
+
+gulp.task('build-prod-css', 'builds da css', function() {
+    var files = [].concat(config.buildDir + '/vendor/**/*.css', config.buildDir + '/assets/*.css');
+    console.log(files);
+    return gulp.src(files)
+        .pipe(plumber())
+        .pipe(concat(prodOutputFiles.css))
+        .pipe(bytediff.start())
+        .pipe(csso())
+        .pipe(bytediff.stop())
+        .pipe(gulp.dest(config.prodDir + '/assets'));
+});
+
+
+gulp.task('build-prod-index', 'builds index file for production', function() {
+
+    // copy over our templates
+    var indexFile = gulp.src('src/index.html');
+    var files = [].concat(
+       'assets/' + prodOutputFiles.css,
+       'assets/' + prodOutputFiles.js
+    );
+
+    var sources = gulp.src(files, {
+        read: false,
+        cwd: config.prodDir,
+    });
+
+    // inject the files, and copy it to the build directory
+    return indexFile.pipe(inject(sources, { addRootSlash: false }))
+        .pipe(gulp.dest(config.prodDir));
+
+
 });
 
 /**
@@ -175,5 +255,14 @@ gulp.task('default', 'runs -> build, watch, server, livereload', function() {
 });
 
 gulp.task('build', 'runs -> clean, sass, html2js, copy, test, index', function() {
-    runSequence('clean', 'sass', 'html2js', 'copy', 'test', 'index');
+    runSequence('clean', 'sass', 'html2js', 'copy', 'ngAnnotate', 'test', 'index');
 });
+
+/**
+ * Setup our prod task
+ */
+ gulp.task('prod', 'builds our app for production, in /dist', function(callback) {
+     runSequence('clean', 'sass', 'html2js', 'copy', 'test', 'build-prod-js', 'build-prod-css', 'build-prod-index', callback);
+ });
+
+

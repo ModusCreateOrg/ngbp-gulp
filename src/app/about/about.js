@@ -1,4 +1,5 @@
-function Config($stateProvider) {
+/* @ngInject */
+function AboutConfig($stateProvider) {
   $stateProvider.state('about', {
       url: '/about',
       views: {
@@ -11,11 +12,12 @@ function Config($stateProvider) {
   });
 }
 
+/* @ngInject */
 function AboutController() {
   var vm = this;
 }
 
 angular
   .module('boilerplate.about', ['ui.router'])
-  .config(Config)
+  .config(AboutConfig)
   .controller('AboutController', AboutController);
